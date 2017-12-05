@@ -14,7 +14,5 @@ ADD . /app
 # Make port 80 available for links and/or publish
 EXPOSE 80
 
-VOLUME /var/run/docker.sock
-
-# Define our command to be run when launching the container
-CMD ["gunicorn", "app:app", "-b", "0.0.0.0:80", "--log-file", "/tmp/app.log", "--access-logfile", "/tmp/access.log", "--workers", "4", "--keep-alive", "0"]
+# Define our command to be run when launching the container.
+ENTRYPOINT ["python3", "app.py"]
