@@ -1,16 +1,20 @@
-from bottle import Bottle, run, request, get, post, template
-import random
-import docker
-import urllib
+import sys
+version = sys.argv[1] if sys.argc > 1 else "3d6c942f9c580832cbf0c07cf8c9c6dc860ea44a"
 
+from bottle import Bottle, run, request, get, post, template
 app = Bottle()
+
+import docker
 client = docker.from_env()
 
+# Unquote url parameters.
 def unquote_args(func):
+  import urllib
   def do(*args, **kwargs):
     return func(*args, **{key: urllib.parse.unquote(x) if isinstance(x, str) else x for key, x in kwargs.items()})
   return do
 
+# Forward url parameters to the function.
 def read_url_parameters(func):
   def do(*args, **kwargs):
     return func(*args, **kwargs, **dict(request.params))
@@ -23,28 +27,27 @@ def index(payload = None):
   t = '''
 <!DOCTYPE html>
 <html>
-<body>
+  <body>
 
-<form action="encypher" method="get">
-<input type="text" name="payload" value="{payload}"><button type="submit" value="Submit">Submit</button>
-</form>
-</br>
+  <form action="encypher" method="get">
+    <input type="text" name="payload" value="{payload}"><button type="submit" value="Submit">Submit</button>
+  </form>
 
-Result:
-</br>
-<pre>
+  </br>
+    Result:
+  </br>
+
+  <pre>
 {res}
-</pre>
+  </pre>
 
-</body>
+  </body>
 </html>
   '''
   res = ""
-  print(payload)
   if payload is not None:
-    global client
-    res = client.containers.run('infinit/dopenssl:3d6c942f9c580832cbf0c07cf8c9c6dc860ea44a',
-                                '"' + str(payload) + '"',
+    res = client.containers.run('infinit/dopenssl:{}'.format(version),
+                                '"{}"'.format(payload),
                                 remove = True).decode('ascii')
   return t.format(res = res, payload = payload or "")
 
