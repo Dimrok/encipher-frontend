@@ -29,7 +29,7 @@ def read_url_parameters(func):
     return func(*args, **kwargs, **dict(request.params))
   return do
 
-@app.route('/encypher')
+@app.route('/')
 @read_url_parameters
 @unquote_args
 def index(payload = None):
@@ -38,8 +38,8 @@ def index(payload = None):
 <html>
   <body>
 
-  <form action="encypher" method="get">
-    <input type="text" name="payload" value="{payload}"><button type="submit" value="Submit">Submit</button>
+  <form action="" method="get">
+    <input type="text" name="payload" value="{payload}" size=40><button type="submit" value="Submit">Submit</button>
   </form>
 
   </br>
