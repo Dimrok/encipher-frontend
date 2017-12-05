@@ -1,5 +1,14 @@
 import sys
-version = sys.argv[1] if sys.argc > 1 else "3d6c942f9c580832cbf0c07cf8c9c6dc860ea44a"
+
+version = "3d6c942f9c580832cbf0c07cf8c9c6dc860ea44a"
+# Check --version:
+# > if --version <xxx>: version = <xxx>
+# > if --version: version = <default>
+# > if --version --other stuff: version = <default>
+if sys.argv.count('--version') and ((1 + sys.argv.index('--version')) < len(sys.argv)):
+  v = sys.argv[sys.argv.index('--version') + 1]
+  if not v.startswith('--'):
+    version = v
 
 from bottle import Bottle, run, request, get, post, template
 app = Bottle()
