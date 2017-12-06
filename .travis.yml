@@ -1,0 +1,15 @@
+language: shell
+
+env:
+  - IMAGE="$DOCKER_USERNAME/encipher-frontend:$TRAVIS_COMMIT"
+
+services:
+  - docker
+
+script:
+  - make build
+  - make check
+
+after_success:
+  - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+  - docker push $IMAGE
